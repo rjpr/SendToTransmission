@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Send to Transmission | Options</title>
+        <link href="css/options.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="options-container">
+            <h1>Transmission Options</h1>
+            <label>
+                IP/Hostname: 
+                <input id="host" type="text" placeholder="localhost"/>
+            </label>
+            <label>
+                Port: 
+                <input id="port" type="text" placeholder="9091"/>
+            </label>
+            <label>
+                Username: 
+                <input id="username" type="text" placeholder="(Optional)"/>
+            </label>
+            <label>
+                Password: 
+                <input id="password" type="password"/>
+            </label>
+
+            <a id="advanced-toggle">Advanced <div id="toggle-icon">&#10094;</div></a>
+
+            <div id="advanced-container">
+                <label>
+                    RPC URL: 
+                    <input id="url" type="text"/>
+                </label>
+                <p>Default: <span>/transmission/rpc</span></p>
+            </div>
+
+            <button id="save">
+                <span id="content">Save Options</span>
+                <div id="success">&#10004; Saved</div>
+            </button>
+        </div>
+        <script src="js/options.js"></script>
+    </body>
+</html>

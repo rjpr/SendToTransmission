@@ -1,0 +1,101 @@
+html, body, input, button {
+    font-size: 14px;
+    color: #333;
+}
+
+html, body {
+    background: #ececec;
+}
+
+.options-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 23em;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 2em 3em;
+    margin: 3em auto;
+}
+
+h1 {
+    margin: 0 0 0.5em;
+    font-weight: normal;
+    text-align: center;
+    padding-bottom: 0.6em;
+    border-bottom: 1px solid #ccc;
+}
+
+label {
+    margin: 1em 0;
+    text-align: right;
+    font-weight: bold;
+}
+
+input {
+    margin-left: 1em;
+    padding: 1em;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+#advanced-toggle {
+    cursor: pointer;
+    text-align: right;
+    margin: 1em 0 0;
+}
+
+#toggle-icon {
+    display: inline-block;
+    font-weight: bold;
+    margin-left: 0.5em;
+    transform: rotate(-90deg);
+    transition: transform .1s linear;
+}
+
+#toggle-icon.open {
+    transform: rotate(90deg);
+}
+
+#advanced-container {
+    display: none;
+    text-align: right;
+    padding: 1.5em 0 0;
+}
+
+#advanced-container span {
+    font-family: Courier New, Courier, monospace;
+    background: #ececec;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 0.15em 0.3em;
+}
+
+button {
+    cursor: pointer;
+    padding: 1em 0;
+    margin: 2em 0 0;
+    background: #2ECC40;
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    transition: all .3s;
+    line-height: 1em;
+}
+
+button:hover, .button-dark {
+    background: #24bc2e;
+}
+
+#success {
+    display: none;
+}
+
+.fadeIn {
+    animation: fadeIn 0.8s;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0}
+    to {opacity: 1}
+}
