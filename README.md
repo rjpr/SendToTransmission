@@ -1,11 +1,9 @@
 SendToTransmission
 ===
 
-A lightweight Chrome extension that adds a context menu item to send the selected link to Transmission.
+A lightweight (just 25kB packaged) Chrome extension that adds a context menu item to send the selected link to Transmission.
 
-Built using no frameworks, just JavaScript, CSS & HTML. 
-
-Packaged size is 26kB (20kB of that being for the various icon sizes), uses ~1MB RAM while idle. 
+Built using no frameworks, just JavaScript, CSS & HTML.
 
 <img src="screenshot.png" alt="Context menu screenshot" />
 
@@ -26,3 +24,10 @@ Usage
 3. Select "Send to Transmission"
 
 <img src="screenshot_options.png" alt="Options page screenshot" />
+
+Licenses
+---
+
+See the LICENSE.md file for details.
+
+Magnet icon by Gregor Cresnar from the Noun Project. Modified by me.
