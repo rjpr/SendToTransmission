@@ -43,3 +43,11 @@
     from {opacity: 1}
     to {opacity: 0}
 }
+
+.send-to-transmission-pulse {
+    animation: stt-pulse 0.75s infinite alternate;
+}
+
+@keyframes stt-pulse {
+    from {opacity: 0.1}
+}

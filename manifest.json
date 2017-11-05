@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Send to Transmission",
   "description": "Send torrent/magnet links to Transmission",
-  "version": "1.0",
+  "version": "1.1",
   "icons": {
     "16": "img/icon-16.png",
     "32": "img/icon-32.png",
@@ -16,7 +16,7 @@
     "<all_urls>"
   ],
   "background": {
-    "scripts": ["js/background.js"]
+    "scripts": ["js/background.min.js"]
   },
   "options_page": "options.html"
 }

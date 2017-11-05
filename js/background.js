@@ -1,5 +1,28 @@
 var Options, sessionToken;
 
+function showLoading() {
+    chrome.tabs.executeScript({
+        // 30 seconds should be enough for a standard timeout
+        code: "var send_to_transmission_message_timeout = " + 30000 + ";"
+    }, function() {
+        chrome.tabs.executeScript({
+            file: "js/message.js"
+        }, function() {
+            var element = "document.getElementById('send_to_transmission_message')";
+            var setText = '<div class="send-to-transmission-pulse">Sending to Transmission...</div>';
+            // Insert message into page
+            chrome.tabs.executeScript({
+                code: element + ".innerHTML='" + setText + "';"
+            });
+        });
+    });
+
+    // Inject the CSS for the message
+    chrome.tabs.insertCSS({
+        file: "css/message.css"
+    });
+};
+
 function showMessage(message, error, long) {
     // Set length of time message appears
     if (long === true) {
@@ -43,8 +66,6 @@ function openRequest(token) {
     // Build & open request from saved options 
     var http = new XMLHttpRequest();
     var targetUrl = "http://" + Options.host + ":" + Options.port + Options.url;
-
-    http.timeout = 2500;
 
     try {
         if (Options.username.length === 0) {
@@ -98,6 +119,8 @@ function addTorrent(info, tab) {
         showMessage("No IP/Hostname is set in options.", error=true);
         return;
     };
+
+    showLoading();
 
     http.onreadystatechange = function() {
         var isDone = http.readyState === XMLHttpRequest.DONE;
