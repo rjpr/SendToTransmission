@@ -26,7 +26,10 @@ setTimeout(
             // removing it slightly before the animation finishes seems to mitigate this
     
             setTimeout(function() {
-                msg.parentNode.removeChild(msg);
+                // Check the element again as the msg variable has changed since being set
+                if (document.getElementById(id) != undefined) {
+                    msg.parentNode.removeChild(msg);                    
+                }
             }, 470);
         };
     }, 

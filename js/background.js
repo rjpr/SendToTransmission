@@ -93,6 +93,8 @@ function getToken() {
     http.onreadystatechange = function() {
         if (http.readyState === XMLHttpRequest.DONE && http.status === 409) {
             response = JSON.stringify(http.responseText);
+            // This finds the string we need and splits it into 2 parts
+            // The second part contains the code we want
             match = response.match(/<code>X-Transmission-Session-Id: (.*?)<\/code>/);
             sessionToken = match[1];
         };
@@ -142,12 +144,26 @@ function addTorrent(info, tab) {
             addTorrent(info, tab);
             return;
         } 
+        // Unauthorized error
+        else if (isDone && http.status === 401) {
+            showMessage("Incorrect username or password.", error=true)
+        }
         // If no response from server then show error
         else if (isDone && http.status === 0) {
             showMessage(
                 'Connection to the Transmission server failed.<br/><br/>' +
                 'Check your settings and that remote access is allowed in Transmission.', 
                 error=true, 
+                long=true
+            );
+        }
+        // Handle enexpected responses
+        else if (isDone) {
+            showMessage(
+                'An unexpected error occured while attempting to connect to Transmission.<br/><br/>'+
+                'Check your settings and that remote access is allowed in Transmission.<br/><br/>'+
+                'Failing that, please submit a detailed support request via the chrome webstore.',
+                error=true,
                 long=true
             );
         }
