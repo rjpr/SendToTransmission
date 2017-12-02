@@ -1,15 +1,15 @@
-var Options, sessionToken;
+let Options, sessionToken;
 
 function showLoading() {
     chrome.tabs.executeScript({
-        // 30 seconds should be enough for a standard timeout
-        code: "var send_to_transmission_message_timeout = " + 30000 + ";"
+        // 20 seconds is the openRequest http timeout
+        code: "var send_to_transmission_message_timeout = " + 20000 + ";"
     }, function() {
         chrome.tabs.executeScript({
             file: "js/message.js"
         }, function() {
-            var element = "document.getElementById('send_to_transmission_message')";
-            var setText = '<div class="send-to-transmission-pulse">Sending to Transmission...</div>';
+            const element = "document.getElementById('send_to_transmission_message')";
+            const setText = '<div class="send-to-transmission-pulse">Sending to Transmission...</div>';
             // Insert message into page
             chrome.tabs.executeScript({
                 code: element + ".innerHTML='" + setText + "';"
@@ -24,13 +24,14 @@ function showLoading() {
 };
 
 function showMessage(message, error, long) {
+    let messageVisibleTime;
     // Set length of time message appears
     if (long === true) {
-        var messageVisibleTime = 10000;
+        messageVisibleTime = 10000;
     } else if (error === true) {
-        var messageVisibleTime = 5000;
+        messageVisibleTime = 5000;
     } else {
-        var messageVisibleTime = 2500;
+        messageVisibleTime = 2500;
     };
     chrome.tabs.executeScript({
         code: "var send_to_transmission_message_timeout = " + messageVisibleTime + ";"
@@ -39,8 +40,9 @@ function showMessage(message, error, long) {
         chrome.tabs.executeScript({
             file: "js/message.js"
         }, function() {
+            let setMessageBg;
             // Set the message text on the callback
-            var element = "document.getElementById('send_to_transmission_message')";
+            const element = "document.getElementById('send_to_transmission_message')";
 
             // If it's an error message, add the error background to the message div
             if (error === true) {
@@ -49,9 +51,14 @@ function showMessage(message, error, long) {
                 setMessageBg = element + ".classList.add('send-to-transmission-message-success');";
             };
 
+            // Add close onclick, pointer cursor to message, and hover text
+            let setClickEvent = element + ".onclick = removeMessage;" + element + '.style = "cursor: pointer;";' 
+                                + element + ".setAttribute('title', 'Click to close');"
+
             // Insert message into page
             chrome.tabs.executeScript({
-                code: element + ".innerHTML='" + message + "';" + setMessageBg
+                code: element + ".innerHTML='" + message + "';" + setMessageBg + 
+                    ";" + setClickEvent
             });
         });
     });
@@ -64,8 +71,8 @@ function showMessage(message, error, long) {
 
 function openRequest(token) {
     // Build & open request from saved options 
-    var http = new XMLHttpRequest();
-    var targetUrl = "http://" + Options.host + ":" + Options.port + Options.url;
+    const http = new XMLHttpRequest();
+    let targetUrl = "http://" + Options.host + ":" + Options.port + Options.url;
 
     try {
         if (Options.username.length === 0) {
@@ -83,12 +90,15 @@ function openRequest(token) {
     // We get this token from getToken and it's set as a global variable that is passed here 
     http.setRequestHeader("X-Transmission-Session-Id", token);
 
+    // Set 20 second timeout as there is none by default
+    http.timeout = 20000;
+
     return http;
 };
 
 function getToken() {
     // Get the Transmission session token from the 409 response page
-    var http = openRequest();
+    const http = openRequest();
 
     http.onreadystatechange = function() {
         if (http.readyState === XMLHttpRequest.DONE && http.status === 409) {
@@ -105,7 +115,7 @@ function getToken() {
 
 function addTorrent(info, tab) {
     // Send href from right clicked link element to Transmission
-    var http, params, response;
+    let http, params, response;
 
     http = openRequest(sessionToken);
 
@@ -123,10 +133,8 @@ function addTorrent(info, tab) {
     };
 
     showLoading();
-
     http.onreadystatechange = function() {
-        var isDone = http.readyState === XMLHttpRequest.DONE;
-
+        let isDone = http.readyState === XMLHttpRequest.DONE;
         if (isDone && http.status === 200) {
             response = JSON.parse(http.responseText);
             // Display messages for success, duplicate or invalid files
@@ -168,6 +176,10 @@ function addTorrent(info, tab) {
             );
         }
     };
+
+    http.ontimeout = function() {
+        showMessage('The connection to the Transmission server timed out.', error=true);
+    }
 
     http.send(params);
 };

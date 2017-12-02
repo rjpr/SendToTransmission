@@ -1,13 +1,13 @@
 function saveOptions(silentUpdate) {
     // Set variables for option values and success messages
-    var host = document.getElementById("host").value;
-    var port = document.getElementById("port").value;
-    var url = document.getElementById("url").value;
-    var username = document.getElementById("username").value;
-    var password = document.getElementById("password").value;
-    var btn = document.getElementById("save");
-    var btnText = document.getElementById("content");
-    var success = document.getElementById("success");
+    let host = document.getElementById("host").value;
+    let port = document.getElementById("port").value;
+    let url = document.getElementById("url").value;
+    let username = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
+    const btn = document.getElementById("save");
+    const btnText = document.getElementById("content");
+    const success = document.getElementById("success");
 
     // Get stored options
     chrome.storage.sync.set({
@@ -54,8 +54,8 @@ function restoreOptions() {
 
 function toggleAdvanced() {
     // Show or hide the advanced section
-    var div = document.getElementById("advanced-container");
-    var icon = document.getElementById("toggle-icon");
+    const div = document.getElementById("advanced-container");
+    const icon = document.getElementById("toggle-icon");
     if (div.style.display === "block") {
         div.style.display = "none";
         icon.className = "";
@@ -65,22 +65,40 @@ function toggleAdvanced() {
     };
 };
 
+function install() {
+    let url = new URL(window.location.href);
+
+    if (url.searchParams.get("install") != null) {
+        // Remove install from url to prevent accidental data overwrite (i.e. if they reload)
+        window.history.replaceState('options', 'Options', 'options.html');
+
+        // Set default options only if extension has not been installed previously
+        chrome.storage.sync.get([
+            'host'
+        ], function(i) {
+            if (i.host) {
+                return;
+            } else {
+                // Set default options in DOM
+                document.getElementById("host").value = "localhost";
+                document.getElementById("port").value = 9091;
+                document.getElementById("url").value = "/transmission/rpc";
+                // Save options
+                saveOptions(silentUpdate=true);
+            }
+        });
+    };
+};
+
+function enterKey() {
+    if (event.keyCode === 13) {  // 13 is the Enter key
+        saveOptions();
+    }
+};
+
 // Restore options on dom load and add event listeners to DOM elements
 document.addEventListener("DOMContentLoaded", restoreOptions);
+document.addEventListener("DOMContentLoaded", install);
+document.addEventListener("keydown", enterKey);
 document.getElementById("save").addEventListener("click", saveOptions);
 document.getElementById("advanced-toggle").addEventListener("click", toggleAdvanced);
-
-// If fresh install, silently save default options
-var url = new URL(window.location.href);
-if (url.searchParams.get("install") != null) {
-    // Remove install from url to prevent accidental data overwrite (i.e. if they reload)
-    window.history.replaceState('options', 'Options', 'options.html');
-
-    // Set default options in DOM
-    document.getElementById("host").value = "localhost";
-    document.getElementById("port").value = 9091;
-    document.getElementById("url").value = "/transmission/rpc";
-
-    // Save options
-    saveOptions(silentUpdate=true);
-};
