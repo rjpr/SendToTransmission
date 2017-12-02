@@ -184,6 +184,19 @@ function addTorrent(info, tab) {
     http.send(params);
 };
 
+function initializeExtension() {
+    getToken();
+    // If first install open options page with "?install"
+    // "?install" saves the default settings to chrome storage
+    chrome.runtime.onInstalled.addListener(function(details) {
+        if (Options.host) {
+            return
+        } else {
+            chrome.tabs.create({url: "options.html?install"});        
+        }
+    });
+}
+
 function getOptions(init) {
     // Get chrome extension settings from storage
     chrome.storage.sync.get([
@@ -195,20 +208,14 @@ function getOptions(init) {
     ], function(items) {
         // Update global Options variable
         Options = items;
-        // Get token if initializing extension
+        // If initializing extension get token & open options page if first install
         if (init) {
-            getToken();
+            initializeExtension();
         };
     });
 };
 
-// If first install open options page with "?install"
-// "?install" saves the default settings to chrome storage
-chrome.runtime.onInstalled.addListener(function(details) {
-    chrome.tabs.create({url: "options.html?install"});
-});
-
-// Get options and get token (init)
+// Get options and intialize extension
 getOptions(init=true);
 
 // Context menu
@@ -222,3 +229,4 @@ chrome.contextMenus.create({
 chrome.storage.onChanged.addListener(function() {
     getOptions();
 });
+
